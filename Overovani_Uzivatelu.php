@@ -1,54 +1,48 @@
 <?php
 class Uzivatel
 {
-    public $jmeno;
-    public $heslo;
-    public function __construct($jmeno,$heslo)
+    private $jmeno;
+    private $heslo;
+    public function __construct($jmeno, $heslo)
     {
         $this->jmeno = $jmeno;
         $this->heslo = $heslo;
     }
-    public function Overeni($jmeno,$heslo)
+    public function overeni($jmeno, $heslo)
     {
-        if ($this->jmeno==$jmeno && $this->heslo==$heslo) {
-            return true;
-        }
-        else
-            {
-                return false;
-            }
+        return $jmeno === $this->jmeno && $heslo === $this->heslo;
     }
     public function ziskejJmeno()
     {
         return $this->jmeno;
     }
 }
-
 class Prihlasovani
 {
-    private $prihlaseniUzivatele = ["josef,karel,marek"];
-    public function __construct($prihlaseniUzivatele)
+    private $prihlaseniUzivatele = [];
+    public function prihlas(Uzivatel $uzivatel, $jmeno, $heslo)
     {
-        $this->prihlaseniUzivatele[] = $prihlaseniUzivatele;
-
-
-    }
-
-    public function prihlas(Uzivatel $Uzivatel, $jmeno, $heslo)
-    {
-        if  ($Uzivatel->Overeni($jmeno,$heslo)==true)
-        {
-            $this->prihlaseniUzivatele= $prihlaseniUzivatele;
-        }
-}
-    public function zobrazPrihlaseneUzivatele ()
-    {
-        foreach ($this->prihlaseniUzivatele as $uzivatel) {
-            echo "Prihlaseni uzivatele: " . $uzivatel;
+        if ($uzivatel->overeni($jmeno, $heslo)) {
+            $this->prihlaseniUzivatele[] = $jmeno;
         }
     }
+    public function zobrazPrihlaseneUzivatele()
+    {
+        echo 'Prihlaseni uzivatele: ' . implode(', ', $this->prihlaseniUzivatele) . '<br>';
+    }
 }
-
-$Uzivatel= new Uzivatel ("Josef","josef1234");
-$Prihlasovani = new Prihlasovani ("josef");
-$Prihlasovani->zobrazPrihlaseneUzivatele() ;
+$josef = new Uzivatel('josef', 'josef1234');
+$prihlasovani = new Prihlasovani();
+// zatim neni nikdo prihlasen
+$prihlasovani->zobrazPrihlaseneUzivatele();
+// prihlaseni uzivatele josef se spravnym jmenem/heslem
+$prihlasovani->prihlas($josef, 'josef', 'josef1234');
+$prihlasovani->zobrazPrihlaseneUzivatele();
+// novy uzivatel karel
+$karel = new Uzivatel('karel', 'karelABC');
+// prihlaseni karla s chybnym heslem
+$prihlasovani->prihlas($karel, 'karel', 'XYZ');
+$prihlasovani->zobrazPrihlaseneUzivatele();
+// prihlaseni karla se spravnym heslem
+$prihlasovani->prihlas($karel, 'karel', 'karelABC');
+$prihlasovani->zobrazPrihlaseneUzivatele();
